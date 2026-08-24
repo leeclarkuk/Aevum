@@ -68,6 +68,20 @@ npm run dev:all
 
 This starts the API on port 8787 and Vite on port 5173. Open `http://localhost:5173`, sign in with GitHub, then connect Cursor from the startup panel or Settings.
 
+## Temporary public link (Cloudflare)
+
+To put the built frontend on a throwaway HTTPS URL:
+
+```bash
+npm run build
+npm run preview
+cloudflared tunnel --url http://127.0.0.1:5173
+```
+
+Keep the API running as well (`npm run start` or `npm run dev:api`). Vite proxies `/api` through the same host, so one tunnel covers the UI and the API.
+
+The trycloudflare hostname changes every time. GitHub OAuth will only complete if you add that hostname as the OAuth callback (`https://<tunnel>/api/github/oauth/callback`) and set `GITHUB_OAUTH_REDIRECT_URI`, `GITHUB_OAUTH_SUCCESS_REDIRECT_URL`, `GITHUB_OAUTH_ALLOWED_ORIGIN`, and `GITHUB_OAUTH_COOKIE_SECURE=true` to match. For a UI look, the sign-in screen is enough.
+
 ## GitHub scope behaviour
 
 On first GitHub OAuth sign-in, scope defaults to `user:<your-login>`.
